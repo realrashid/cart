@@ -1,0 +1,88 @@
+{
+    "name": "realrashid/cart",
+    "description": "In the realm of e-commerce, efficient cart management is paramount. Meet Cart — your ultimate solution for seamless shopping cart functionality in Laravel applications. Cart simplifies the complexities of shopping cart operations, from product additions to total calculations, ensuring a frictionless user experience.",
+    "keywords": [
+        "realrashid", "laravel", "cart", "shopping cart", "ecommerce", "laravel cart", "cart management", "shopping", "online retail"
+    ],
+    "homepage": "https://github.com/realrashid/cart",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rashid Ali",
+            "email": "realrashid05@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "realrashid05@gmail.com",
+        "issues": "https://github.com/realrashid/cart/issues",
+        "source": "https://github.com/realrashid/cart",
+        "docs": "https://realrashid.github.io/cart/"
+    },
+    "require": {
+        "php": "^8.1|^8.2",
+        "laravel/framework": "^8.0 | ^9.0 | ^10.0 | ^11.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.1.1||^7.10.0",
+        "orchestra/testbench": "^6.0.0||^7.0.0||^8.20||^9.0.0",
+        "pestphp/pest": "^2.34",
+        "pestphp/pest-plugin-arch": "^2.7",
+        "pestphp/pest-plugin-laravel": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "RealRashid\\Cart\\": "src/",
+            "RealRashid\\Cart\\Database\\Factories\\": "database/factories/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\": "tests/Support/app/",
+            "Database\\Factories\\": "tests/Support/database/factories/",
+            "RealRashid\\Cart\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "clear": "@php vendor/bin/testbench package:purge-cart --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": [
+            "@composer run prepare",
+            "@php vendor/bin/testbench workbench:build --ansi"
+        ],
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer run build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RealRashid\\Cart\\CartServiceProvider"
+            ],
+            "aliases": {
+                "Cart": "RealRashid\\Cart\\Facades\\Cart"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
