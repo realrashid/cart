@@ -18,7 +18,7 @@ In the world of online retail, effective cart management is crucial. That's wher
 
 - **Flexible Tax Rate Options**: Each cart instance can operate with its own distinct tax rate. This level of flexibility ensures dynamic tax handling tailored to specific use cases.
 
--**Coupon Integration**: Enhance your cart’s functionality with coupon support. Define and manage coupon codes that can be applied to your cart, allowing for discounts and special offers. Configure coupon rules, expiration dates, and usage limits to meet your promotional needs.
+- **Coupon Integration**: Enhance your cart’s functionality with coupon support. Define and manage coupon codes that can be applied to your cart, allowing for discounts and special offers. Configure coupon rules, expiration dates, and usage limits to meet your promotional needs.
 
 ## Getting Started
 
