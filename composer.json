@@ -1,6 +1,6 @@
 {
     "name": "realrashid/cart",
-    "description": "In the realm of e-commerce, efficient cart management is paramount. Meet Cart — your ultimate solution for seamless shopping cart functionality in Laravel applications. Cart simplifies the complexities of shopping cart operations, from product additions to total calculations, ensuring a frictionless user experience.",
+    "description": "Meet Cart — your ultimate solution for seamless shopping cart functionality in Laravel applications. Cart simplifies the complexities of shopping cart operations, from product additions to total calculations, ensuring a frictionless user experience.",
     "keywords": [
         "realrashid", "laravel", "cart", "shopping cart", "ecommerce", "laravel cart", "cart management", "shopping", "online retail"
     ],

@@ -94,3 +94,21 @@ Cart::updatePrice($id, $price);
 ```
 
 Updates the price of an item in the cart.
+
+```php
+Cart::applyCoupon(Coupon $coupon);
+```
+
+Applies a coupon to the current session. Ensure that the coupon is valid and not expired before applying. If the coupon is invalid, an exception will be thrown.
+
+```php
+Cart::removeCoupon();
+```
+
+Removes the currently applied coupon from the session.
+
+```php
+Cart::getAppliedCouponDetails();
+```
+
+Retrieves the details of the applied coupon from the session, including the code, type, and discount amount. If no coupon is applied, returns null.

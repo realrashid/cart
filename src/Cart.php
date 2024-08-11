@@ -3,8 +3,9 @@
 namespace RealRashid\Cart;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
+use RealRashid\Cart\Coupon\Coupon;
+use Illuminate\Support\Facades\Session;
 
 class Cart
 {
@@ -19,6 +20,8 @@ class Cart
 
     // Tax rate for the current cart instance
     protected $taxRate;
+
+    protected $appliedCoupon;
 
     /**
      * Constructor method, called when a Cart object is created.
@@ -76,7 +79,7 @@ class Cart
         $config = config("cart.instances.$instance", []);
 
         // If the instance doesn't already exist, create a new one
-        if (! isset(static::$instances[$instance])) {
+        if (!isset(static::$instances[$instance])) {
             // Pass the configuration to the constructor
             static::$instances[$instance] = new static($instance, $config);
         }
@@ -116,7 +119,7 @@ class Cart
      */
     public function add($id, string $name = null, int $quantity = 1, float $price = null, array $options = [], float $taxrate = null)
     {
-        if (! is_int($quantity) || $quantity <= 0) {
+        if (!is_int($quantity) || $quantity <= 0) {
             throw new InvalidArgumentException('Quantity must be a positive integer.');
         }
 
@@ -190,7 +193,7 @@ class Cart
     public function updateQuantity($id, $quantity)
     {
         // Check if the new quantity is a positive integer
-        if (! is_int($quantity)) {
+        if (!is_int($quantity)) {
             throw new InvalidArgumentException('Quantity must be a positive integer.');
         }
 
@@ -552,10 +555,28 @@ class Cart
      */
     public function total()
     {
-        return $this->items->sum(function (CartItem $item) {
+        $total = $this->items->sum(function (CartItem $item) {
             // Calculate the total price for each item and sum them up.
             return $item->total();
         });
+
+        // Retrieve applied coupon from session
+        $this->appliedCoupon = Session::get('appliedCoupon');
+
+        if ($this->appliedCoupon) {
+            $discountAmount = $this->appliedCoupon->getDiscountAmount();
+            if ($this->appliedCoupon->getDiscountType() === 'percentage') {
+                $discount = $total * ($discountAmount / 100);
+                $total -= $discount;
+            } elseif ($this->appliedCoupon->getDiscountType() === 'fixed_amount') {
+                $total -= $discountAmount;
+            }
+
+            // Ensure total does not go below zero
+            $total = max($total, 0);
+        }
+
+        return $total;
     }
 
     /**
@@ -594,6 +615,95 @@ class Cart
     }
 
     /**
+     * Apply a coupon to the current session.
+     *
+     * @param Coupon $coupon The coupon object to apply.
+     *
+     * @throws \Exception If the coupon is not valid.
+     *
+     * @return $this
+     *
+     * Usage Example:
+     *
+     * // Create a percentage-based coupon with code 'PERCENT20', 20% discount, valid until '2024-12-31'.
+     * $percentageCoupon = new PercentageCoupon('PERCENT20', 20, '2024-12-31');
+     *
+     * // Apply the percentage coupon to the 'cart' instance of the Cart class.
+     * Cart::instance('cart')->applyCoupon($percentageCoupon);
+     */
+    public function applyCoupon(Coupon $coupon)
+    {
+        // Check if the coupon is valid and not expired
+        if (!$coupon->isValid()) {
+            throw new \Exception('Coupon is not valid or has expired.');
+        }
+
+        // Set the applied coupon to the current instance
+        $this->appliedCoupon = $coupon;
+
+        // Store the applied coupon in session for persistence
+        Session::put('appliedCoupon', $this->appliedCoupon);
+
+        // Return $this to allow method chaining
+        return $this;
+    }
+
+    /**
+     * Remove the currently applied coupon from the session.
+     *
+     * @return $this
+     *
+     * Usage Example:
+     *
+     * // Remove the currently applied coupon from the 'cart' instance of the Cart class.
+     * Cart::instance('cart')->removeCoupon();
+     */
+    public function removeCoupon()
+    {
+        // Remove coupon from session
+        Session::forget('appliedCoupon');
+
+        // Clear applied coupon property
+        $this->appliedCoupon = null;
+
+        // Return $this to allow method chaining
+        return $this;
+    }
+
+    /**
+     * Retrieve the details of the applied coupon from the session.
+     *
+     * @return stdClass|null An object containing coupon details (code, type, discountAmount), or null if no coupon is applied.
+     */
+    public function getAppliedCouponDetails()
+    {
+        // Retrieve the applied coupon object from the session
+        $this->appliedCoupon = Session::get('appliedCoupon');
+
+        // If no coupon is applied, return null
+        if (!$this->appliedCoupon) {
+            return null;
+        }
+
+        // Create a stdClass object to store coupon details
+        $couponDetails = new \stdClass();
+        $couponDetails->code = $this->appliedCoupon->getCode();
+        $couponDetails->type = $this->appliedCoupon->getDiscountType();
+
+        // Calculate the discount amount based on coupon type
+        if ($this->appliedCoupon->getDiscountType() === 'percentage') {
+            $discountAmount = $this->subtotal() * ($this->appliedCoupon->getDiscountAmount() / 100);
+            $couponDetails->discountAmount = round($discountAmount, 2);
+        } elseif ($this->appliedCoupon->getDiscountType() === 'fixed_amount') {
+            $couponDetails->discountAmount = $this->appliedCoupon->getDiscountAmount();
+        } else {
+            $couponDetails->discountAmount = 0;
+        }
+
+        return $couponDetails;
+    }
+
+    /**
      * Check if the provided item is a multi-item (an array of items).
      *
      * @param  mixed  $item The item to be checked.
@@ -602,7 +712,7 @@ class Cart
     private function isMultiItem($item)
     {
         // Check if the item is an array and if its first element is also an array.
-        if (! is_array($item)) {
+        if (!is_array($item)) {
             return false;
         }
 
@@ -653,7 +763,7 @@ class Cart
             $cartItem->setTaxRate($taxrate);
         }
         // If tax is enabled but tax rate is not provided, use default tax rate or throw an exception
-        elseif ($taxEnabled && ! isset($taxrate)) {
+        elseif ($taxEnabled && !isset($taxrate)) {
             // Retrieve the default tax rate from the configuration (again, for clarity)
             $defaultTaxRate = config("cart.instances.$this->currentInstance.tax_rate");
 
@@ -679,7 +789,7 @@ class Cart
      */
     protected function getSessionKey()
     {
-        return 'cart_'.$this->currentInstance;
+        return 'cart_' . $this->currentInstance;
     }
 
     /**

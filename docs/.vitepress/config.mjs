@@ -97,6 +97,9 @@ export default defineConfig({
                     { text: 'Cart Total', link: '/usage/total' },
                     { text: 'Count Cart', link: '/usage/count' },
                     { text: 'Empty Cart', link: '/usage/empty' },
+                    { text: 'Apply Coupon', link: '/usage/apply-coupon' },
+                    { text: 'Remove Coupon', link: '/usage/remove-coupon' },
+                    { text: 'Coupon Details', link: '/usage/coupon-details' }
                 ]
             },
             {
