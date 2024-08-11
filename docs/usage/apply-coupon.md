@@ -52,6 +52,104 @@ $fixedAmountCoupon = new FixedAmountCoupon('FIXED10', 10, '2024-12-31');
 Cart::instance('cart')->applyCoupon($fixedAmountCoupon);
 ```
 
+## Custom Coupon Classes
+
+You can create custom coupon classes by implementing the `Coupon` interface provided by the Cart package. Here's an example of how to create a fixed amount coupon class:
+
+### Example: FixedAmountCoupon Class
+
+```php
+<?php
+
+namespace App\Coupons;
+
+use RealRashid\Cart\Coupon\Coupon as CouponContract;
+use App\Models\Coupon as CouponModel;
+
+class FixedAmountCoupon implements CouponContract
+{
+    protected $coupon;
+
+    public function __construct(CouponModel $coupon)
+    {
+        $this->coupon = $coupon;
+    }
+
+    public function getCode(): string
+    {
+        return $this->coupon->code;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->coupon->isValid();
+    }
+
+    public function getDiscountType(): string
+    {
+        return 'fixed_amount';
+    }
+
+    public function getExpiryDate(): string
+    {
+        return $this->coupon->expiry_date;
+    }
+
+    public function getDiscountAmount(): float
+    {
+        return $this->coupon->amount;
+    }
+}
+```
+
+## Coupon Interface
+
+The Cart package provides a `Coupon` interface that you should implement for your custom coupon classes:
+
+```php
+<?php
+
+namespace RealRashid\Cart\Coupon;
+
+interface Coupon
+{
+    /**
+     * Get the code of the coupon.
+     *
+     * @return string
+     */
+    public function getCode(): string;
+
+    /**
+     * Check if the coupon is valid.
+     *
+     * @return bool
+     */
+    public function isValid(): bool;
+
+    /**
+     * Get the type of discount ('percentage' or 'fixed_amount').
+     *
+     * @return string
+     */
+    public function getDiscountType(): string;
+
+    /**
+     * Get the expiry date of the coupon.
+     *
+     * @return \DateTimeInterface|string
+     */
+    public function getExpiryDate();
+
+    /**
+     * Get the discount amount.
+     *
+     * @return float
+     */
+    public function getDiscountAmount(): float;
+}
+```
+
 ## Details
 
 When you apply a coupon:
