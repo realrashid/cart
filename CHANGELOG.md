@@ -2,6 +2,18 @@
 
 All notable changes to `Cart` will be documented in this file.
 
+## v1.2.0 - 2025-12-02
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot[bot] in https://github.com/realrashid/cart/pull/6
+* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot[bot] in https://github.com/realrashid/cart/pull/8
+* Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot[bot] in https://github.com/realrashid/cart/pull/9
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/realrashid/cart/pull/10
+* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/realrashid/cart/pull/12
+
+**Full Changelog**: https://github.com/realrashid/cart/compare/v1.1.0...v1.2.0
+
 ## v1.1.0 - 2024-08-11
 
 ### v1.1.0 - 2024-08-11
@@ -19,6 +31,7 @@ All notable changes to `Cart` will be documented in this file.
     // Create and apply a percentage-based coupon
     $percentageCoupon = new PercentageCoupon('PERCENT20', 20, '2024-12-31');
     Cart::instance('cart')->applyCoupon($percentageCoupon);
+    
     
     ```
   - **Custom Coupons**: Develop custom coupon classes to meet your specific business requirements by implementing the `Coupon` interface. For example, here’s how you can create a fixed amount coupon:
@@ -65,6 +78,7 @@ All notable changes to `Cart` will be documented in this file.
             return $this->coupon->amount;
         }
     }
+    
     
     ```
   - **Manage Coupons**: New methods to efficiently manage applied coupons.
