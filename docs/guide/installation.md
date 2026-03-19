@@ -2,6 +2,11 @@
 
 Welcome to the installation guide for Cart! By following these simple steps, you'll have Cart up and running in your Laravel application in no time.
 
+## Requirements
+
+- PHP 8.2 or higher
+- Laravel 10.0, 11.0, 12.0 or 13.0
+
 ## Step 1: Composer Magic ✨
 
 First, let's kick things off with some Composer magic. Open your terminal and run the following command:

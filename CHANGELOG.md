@@ -2,6 +2,17 @@
 
 All notable changes to `Cart` will be documented in this file.
 
+## v2.0.0 - 2025-02-12
+
+### Added
+- Added support for Laravel 13.0.
+- Added support for PHP 8.4.
+- Added Laravel Boost AI guidelines and skills.
+- Added BitterBrains partner banner to documentation.
+
+### Changed
+- Minimum PHP version requirement is now 8.2.
+
 ## v1.2.0 - 2025-12-02
 
 ### What's Changed
