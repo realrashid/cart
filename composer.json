@@ -50,6 +50,9 @@
         }
     },
     "scripts": {
+        "post-update-cmd": [
+            "@php artisan boost:update"
+        ],
         "post-autoload-dump": "@composer run prepare",
         "clear": "@php vendor/bin/testbench package:purge-cart --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
